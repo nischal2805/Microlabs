@@ -532,7 +532,7 @@ async def get_location_fever_stats(
 ):
     """Get fever statistics for a specific location"""
     try:
-        logger.info(f"Fetching fever stats for location: {latitude}, {longitude}")
+        logger.info("Fetching fever stats for location")
         # In a real app, this would query a database for nearby fever reports
         # For MVP, returning simulated data
         return LocationFeverStats(
