@@ -1,6 +1,19 @@
 // API client for communicating with the FastAPI backend
 
-import { TriageInput, TriageOutput, HealthStatus } from './types';
+import { 
+  TriageInput, 
+  TriageOutput, 
+  HealthStatus,
+  FoodHistoryInput,
+  FoodHistoryResponse,
+  TemperatureHistoryInput,
+  TemperatureHistoryResponse,
+  FeverReportInput,
+  LocationFeverStats,
+  ReminderInput,
+  ReminderResponse,
+  Reminder
+} from './types';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 const API_TIMEOUT = 30000; // 30 seconds
@@ -83,5 +96,151 @@ export async function healthCheck(): Promise<HealthStatus> {
       throw error;
     }
     throw new ApiError(500, 'Unable to check service health');
+  }
+}
+
+// Food History API
+export async function saveFoodHistory(data: FoodHistoryInput): Promise<FoodHistoryResponse> {
+  try {
+    const response = await fetchWithTimeout(
+      `${API_BASE_URL}/api/food-history`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      },
+      10000
+    );
+
+    if (!response.ok) {
+      throw new ApiError(response.status, 'Failed to save food history');
+    }
+
+    return await response.json();
+  } catch (error) {
+    if (error instanceof ApiError) throw error;
+    throw new ApiError(500, 'Unable to save food history');
+  }
+}
+
+// Temperature History API
+export async function saveTemperatureHistory(data: TemperatureHistoryInput): Promise<TemperatureHistoryResponse> {
+  try {
+    const response = await fetchWithTimeout(
+      `${API_BASE_URL}/api/temperature-history`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      },
+      10000
+    );
+
+    if (!response.ok) {
+      throw new ApiError(response.status, 'Failed to save temperature history');
+    }
+
+    return await response.json();
+  } catch (error) {
+    if (error instanceof ApiError) throw error;
+    throw new ApiError(500, 'Unable to save temperature history');
+  }
+}
+
+// Location-based Fever Detection API
+export async function reportFeverLocation(data: FeverReportInput): Promise<{ success: boolean; message: string; alert_level: string }> {
+  try {
+    const response = await fetchWithTimeout(
+      `${API_BASE_URL}/api/location/fever-report`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      },
+      10000
+    );
+
+    if (!response.ok) {
+      throw new ApiError(response.status, 'Failed to report fever location');
+    }
+
+    return await response.json();
+  } catch (error) {
+    if (error instanceof ApiError) throw error;
+    throw new ApiError(500, 'Unable to report fever location');
+  }
+}
+
+export async function getLocationFeverStats(
+  latitude: number,
+  longitude: number,
+  radius_km: number = 10
+): Promise<LocationFeverStats> {
+  try {
+    const response = await fetchWithTimeout(
+      `${API_BASE_URL}/api/location/fever-stats?latitude=${latitude}&longitude=${longitude}&radius_km=${radius_km}`,
+      { method: 'GET' },
+      10000
+    );
+
+    if (!response.ok) {
+      throw new ApiError(response.status, 'Failed to fetch fever statistics');
+    }
+
+    return await response.json();
+  } catch (error) {
+    if (error instanceof ApiError) throw error;
+    throw new ApiError(500, 'Unable to fetch fever statistics');
+  }
+}
+
+// Reminder System API
+export async function saveReminders(data: ReminderInput): Promise<ReminderResponse> {
+  try {
+    const response = await fetchWithTimeout(
+      `${API_BASE_URL}/api/reminders`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      },
+      10000
+    );
+
+    if (!response.ok) {
+      throw new ApiError(response.status, 'Failed to save reminders');
+    }
+
+    return await response.json();
+  } catch (error) {
+    if (error instanceof ApiError) throw error;
+    throw new ApiError(500, 'Unable to save reminders');
+  }
+}
+
+export async function getReminders(): Promise<Reminder[]> {
+  try {
+    const response = await fetchWithTimeout(
+      `${API_BASE_URL}/api/reminders`,
+      { method: 'GET' },
+      10000
+    );
+
+    if (!response.ok) {
+      throw new ApiError(response.status, 'Failed to fetch reminders');
+    }
+
+    return await response.json();
+  } catch (error) {
+    if (error instanceof ApiError) throw error;
+    throw new ApiError(500, 'Unable to fetch reminders');
   }
 }

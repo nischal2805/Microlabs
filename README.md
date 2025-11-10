@@ -21,6 +21,7 @@ An AI-powered triage system that provides instant, accurate fever assessment com
 
 ## ✨ Key Features
 
+### Core Triage Features
 - 🤖 **AI-Powered Analysis**: GPT-4 trained on medical triage protocols
 - ⚡ **Instant Assessment**: Results in <30 seconds
 - 🎯 **4-Level Severity**: LOW → MEDIUM → HIGH → CRITICAL
@@ -28,6 +29,15 @@ An AI-powered triage system that provides instant, accurate fever assessment com
 - 🚨 **Red Flag Detection**: Automatic identification of life-threatening symptoms
 - 📱 **Mobile Responsive**: Works on any device
 - 🌐 **24/7 Available**: No wait times, instant guidance
+- 💬 **AI Chatbot**: Follow-up questions and health guidance
+
+### Villager-Friendly Features (NEW!)
+- 🎤 **Voice Input**: Speak your symptoms using voice recognition (Web Speech API)
+- 🍽️ **Food History Tracking**: Log and monitor your daily meals and dietary habits
+- 🌡️ **Temperature Tracking**: Daily temperature monitoring with trend analysis
+- 📍 **Location-Based Fever Detection**: Check fever activity in your local area
+- ⏰ **Smart Reminders**: Medicine, diet, and health check-up reminders with notifications
+- 🔒 **Privacy-First**: All data stored locally on your device
 
 ## 🏗️ Architecture
 
@@ -124,18 +134,26 @@ Try these sample scenarios to see the system in action:
 - Reduce unnecessary ER visits by **30-40%**
 - Improve early detection of life-threatening conditions
 - Provide 24/7 medical guidance to underserved populations
+- **Accessible to rural villages** with voice-based interaction and simple interfaces
+- Enable community health monitoring through location-based fever tracking
+- **Improve medication adherence** with smart reminder system
 - Scale to millions of users with minimal infrastructure
 - Enable faster triage in pandemic scenarios
 
 ## 🔮 Future Roadmap
 
+- [x] Voice-enabled input for accessibility
+- [x] Food and meal history tracking
+- [x] Daily temperature tracking with trends
+- [x] Location-based fever pattern detection
+- [x] Medicine and diet reminder system
+- [x] Enhanced chatbot for follow-up questions
 - [ ] Integration with wearable devices (Apple Watch, Fitbit)
 - [ ] Multi-language support (Spanish, Mandarin, Hindi)
 - [ ] Telemedicine integration with video consultations
 - [ ] Clinical validation studies with healthcare providers
 - [ ] Mobile apps (iOS/Android native applications)
 - [ ] Electronic health record (EHR) integration
-- [ ] Historical tracking of symptoms over time
 - [ ] Family profile management
 - [ ] Emergency contact notifications
 
@@ -184,6 +202,51 @@ Access metrics at: `http://localhost:8000/api/metrics`
 - Temperature: >105°F or <95°F
 - Red flags: Stiff neck + altered mental status, difficulty breathing, confusion
 - Action: Call 911 or go to ER immediately
+
+## 🌟 Using the New Villager-Friendly Features
+
+### Voice Input 🎤
+1. Look for the microphone button in the chat interface
+2. Click the button and grant microphone permissions
+3. Speak your question or symptoms clearly
+4. The system will transcribe your speech automatically
+5. Works in modern browsers (Chrome, Edge, Safari)
+
+### Food History 🍽️
+1. Click "Health Tracking Features" on the home page
+2. Select "Food History"
+3. Add meals by selecting meal type (breakfast, lunch, dinner, snack)
+4. Enter what you ate and optional notes
+5. View your complete meal history
+6. Track dietary patterns during illness
+
+### Temperature Tracking 🌡️
+1. Access from "Health Tracking Features"
+2. Record your temperature readings with notes
+3. View trends: rising, falling, or stable
+4. See average and latest readings
+5. Monitor fever progression over days
+6. All data stored locally for privacy
+
+### Location-Based Fever Detection 📍
+1. Access from "Health Tracking Features"
+2. Click "Detect My Location" to use your GPS
+3. View fever activity in your area (10km radius)
+4. See alert levels: normal, elevated, or high
+5. Stay informed about community health
+6. Your location is not stored on servers
+
+### Smart Reminders ⏰
+1. Access from "Health Tracking Features"
+2. Create reminders for:
+   - Medicine doses
+   - Meal times
+   - Doctor check-ups
+   - Temperature checks
+3. Set time and frequency
+4. Enable browser notifications
+5. Reminders persist across sessions
+6. Toggle reminders on/off as needed
 
 ## ⚠️ Medical Disclaimer
 

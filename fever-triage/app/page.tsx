@@ -6,8 +6,9 @@ import { triageAssessment } from '@/lib/api';
 import SymptomForm from '@/components/SymptomForm';
 import ResultsDisplay from '@/components/ResultsDisplay';
 import ChatInterface from '@/components/ChatInterface';
+import FeaturesHub from '@/components/FeaturesHub';
 import toast from 'react-hot-toast';
-import { AlertTriangle } from 'lucide-react';
+import { AlertTriangle, Activity } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 
@@ -16,6 +17,7 @@ export default function Home() {
   const [result, setResult] = useState<TriageOutput | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [showChat, setShowChat] = useState(false);
+  const [showFeatures, setShowFeatures] = useState(false);
 
   const handleSubmit = async (data: TriageInput) => {
     setIsLoading(true);
@@ -39,6 +41,7 @@ export default function Home() {
     setResult(null);
     setError(null);
     setShowChat(false);
+    setShowFeatures(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -70,8 +73,23 @@ export default function Home() {
         </div>
       </div>
 
+      {/* Features Toggle Button */}
+      {!result && (
+        <div className="mb-6 flex justify-center">
+          <button
+            onClick={() => setShowFeatures(!showFeatures)}
+            className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all"
+          >
+            <Activity size={24} />
+            {showFeatures ? 'Back to Assessment' : 'Health Tracking Features'}
+          </button>
+        </div>
+      )}
+
       {/* Main Content */}
-      {!result ? (
+      {showFeatures ? (
+        <FeaturesHub />
+      ) : !result ? (
         <>
           {error && (
             <div className="bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 p-4 rounded-lg mb-6">
