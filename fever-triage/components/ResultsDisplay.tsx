@@ -191,7 +191,7 @@ export default function ResultsDisplay({ result, onNewAssessment }: ResultsDispl
           </li>
           <li className="flex items-start gap-2 text-yellow-800">
             <span className="font-bold">•</span>
-            <span className="text-sm">Symptoms worsen or don't improve within the expected timeline</span>
+            <span className="text-sm">Symptoms worsen or don&apos;t improve within the expected timeline</span>
           </li>
         </ul>
       </div>
