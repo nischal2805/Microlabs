@@ -123,13 +123,13 @@ export default function SymptomForm({ onSubmit, isLoading }: SymptomFormProps) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="bg-white rounded-xl shadow-lg p-6">
-        <h2 className="text-2xl font-bold text-gray-900 mb-6">Patient Information</h2>
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Patient Information</h2>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Temperature */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
               Temperature
             </label>
             <div className="flex gap-2">
@@ -138,7 +138,7 @@ export default function SymptomForm({ onSubmit, isLoading }: SymptomFormProps) {
                 step="0.1"
                 value={temperature}
                 onChange={(e) => setTemperature(parseFloat(e.target.value))}
-                className={`flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${getTemperatureColor(tempUnit === 'F' ? temperature : celsiusToFahrenheit(temperature))}`}
+                className={`flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${getTemperatureColor(tempUnit === 'F' ? temperature : celsiusToFahrenheit(temperature))}`}
                 required
               />
               <button

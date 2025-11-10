@@ -16,16 +16,18 @@ import {
   Droplets,
   Moon,
   Thermometer,
-  Info
+  Info,
+  MessageSquare
 } from 'lucide-react';
 import { useState } from 'react';
 
 interface ResultsDisplayProps {
   result: TriageOutput;
   onNewAssessment: () => void;
+  onOpenChat?: () => void;
 }
 
-export default function ResultsDisplay({ result, onNewAssessment }: ResultsDisplayProps) {
+export default function ResultsDisplay({ result, onNewAssessment, onOpenChat }: ResultsDisplayProps) {
   const [showExplanation, setShowExplanation] = useState(false);
   const timestamp = formatTimestamp(new Date());
 
@@ -197,7 +199,7 @@ export default function ResultsDisplay({ result, onNewAssessment }: ResultsDispl
       </div>
 
       {/* Action Buttons */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
         <button
           onClick={onNewAssessment}
           className="flex items-center justify-center gap-2 px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors"
@@ -206,9 +208,19 @@ export default function ResultsDisplay({ result, onNewAssessment }: ResultsDispl
           New Assessment
         </button>
         
+        {onOpenChat && (
+          <button
+            onClick={onOpenChat}
+            className="flex items-center justify-center gap-2 px-4 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold transition-colors"
+          >
+            <MessageSquare size={18} />
+            Ask Questions
+          </button>
+        )}
+        
         <button
           onClick={handlePrint}
-          className="flex items-center justify-center gap-2 px-4 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg font-semibold transition-colors"
+          className="flex items-center justify-center gap-2 px-4 py-3 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 rounded-lg font-semibold transition-colors"
         >
           <Printer size={18} />
           Print Report
@@ -216,7 +228,7 @@ export default function ResultsDisplay({ result, onNewAssessment }: ResultsDispl
         
         <button
           onClick={handleShare}
-          className="flex items-center justify-center gap-2 px-4 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg font-semibold transition-colors"
+          className="flex items-center justify-center gap-2 px-4 py-3 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 rounded-lg font-semibold transition-colors"
         >
           <Share2 size={18} />
           Share

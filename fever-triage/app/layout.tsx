@@ -3,7 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import EmergencyBanner from "@/components/EmergencyBanner";
 import { Toaster } from "react-hot-toast";
-import { Activity } from "lucide-react";
+import Header from "@/components/Header";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -28,24 +28,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-50`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-50 dark:bg-gray-900 transition-colors`}
       >
         <EmergencyBanner />
-        
-        {/* Header */}
-        <header className="bg-white shadow-sm sticky top-0 z-40">
-          <div className="max-w-7xl mx-auto px-4 py-4 flex items-center gap-3">
-            <div className="bg-blue-600 p-2 rounded-lg">
-              <Activity className="text-white" size={24} />
-            </div>
-            <div>
-              <h1 className="text-xl font-bold text-gray-900">AI Fever Triage System</h1>
-              <p className="text-xs text-gray-600">Intelligent Medical Assessment</p>
-            </div>
-          </div>
-        </header>
+        <Header />
 
         {/* Main Content */}
         <main className="min-h-screen">
@@ -53,7 +41,7 @@ export default function RootLayout({
         </main>
 
         {/* Footer */}
-        <footer className="bg-gray-900 text-white py-8 mt-12">
+        <footer className="bg-gray-900 dark:bg-black text-white py-8 mt-12 transition-colors">
           <div className="max-w-7xl mx-auto px-4">
             <div className="text-center">
               <h3 className="text-lg font-bold mb-2">⚠️ Medical Disclaimer</h3>

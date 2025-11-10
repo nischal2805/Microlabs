@@ -307,6 +307,88 @@ async def triage_assessment(data: TriageInput):
         )
 
 
+class ChatMessage(BaseModel):
+    role: str
+    content: str
+
+
+class ChatInput(BaseModel):
+    message: str = Field(..., min_length=1, max_length=500)
+    triage_context: Dict = Field(...)
+    conversation_history: List[ChatMessage] = Field(default_factory=list)
+
+
+class ChatOutput(BaseModel):
+    response: str
+
+
+@app.post("/api/chat", response_model=ChatOutput)
+async def chat_endpoint(data: ChatInput):
+    """Chat endpoint for follow-up questions after triage assessment"""
+    try:
+        logger.info(f"Received chat message: {data.message[:50]}...")
+        
+        if not openai_client:
+            raise HTTPException(
+                status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                detail="AI service is not configured."
+            )
+        
+        # Create system prompt with triage context
+        system_prompt = f"""You are a helpful medical assistant providing follow-up information after a fever triage assessment. 
+
+The patient received a {data.triage_context.get('severity', 'UNKNOWN')} severity assessment with the following context:
+- Likely condition: {data.triage_context.get('symptoms', 'Unknown')}
+- Recommendation: {data.triage_context.get('recommended_action', 'See healthcare provider')}
+
+Your role:
+1. Answer follow-up questions about their symptoms and assessment
+2. Provide general health advice and home care tips
+3. Explain over-the-counter medication options (general information only)
+4. Clarify when to seek additional medical care
+5. Always remind them this is educational information, not medical advice
+
+Guidelines:
+- Be empathetic and supportive
+- Keep responses concise (2-3 paragraphs max)
+- Do not diagnose or prescribe specific treatments
+- Always defer to healthcare providers for medical decisions
+- If asked about prescriptions, explain they need a doctor
+- Remind them to follow their assessment recommendation"""
+
+        # Build conversation history
+        messages = [{"role": "system", "content": system_prompt}]
+        
+        # Add conversation history (last 6 messages for context)
+        for msg in data.conversation_history[-6:]:
+            messages.append({"role": msg.role, "content": msg.content})
+        
+        # Add current message
+        messages.append({"role": "user", "content": data.message})
+        
+        # Call OpenAI
+        response = openai_client.chat.completions.create(
+            model="gpt-4-turbo",
+            messages=messages,
+            temperature=0.7,
+            max_tokens=400,
+            timeout=30
+        )
+        
+        assistant_message = response.choices[0].message.content
+        logger.info("Chat response generated successfully")
+        
+        return ChatOutput(response=assistant_message)
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Chat endpoint error: {e}")
+        return ChatOutput(
+            response="I'm sorry, I'm having trouble responding right now. Please remember to follow your assessment recommendation and consult with a healthcare provider if you have specific medical questions."
+        )
+
+
 @app.get("/")
 async def root():
     """Root endpoint"""
