@@ -389,12 +389,207 @@ Guidelines:
         )
 
 
+# New Feature Models - Food History
+class FoodEntry(BaseModel):
+    timestamp: str
+    meal_type: str = Field(..., pattern="^(breakfast|lunch|dinner|snack)$")
+    description: str = Field(..., min_length=1, max_length=200)
+    notes: Optional[str] = Field(None, max_length=200)
+
+
+class FoodHistoryInput(BaseModel):
+    entries: List[FoodEntry]
+
+
+class FoodHistoryResponse(BaseModel):
+    success: bool
+    message: str
+
+
+# Temperature History
+class TemperatureEntry(BaseModel):
+    timestamp: str
+    temperature: float = Field(..., ge=95.0, le=110.0)
+    notes: Optional[str] = Field(None, max_length=200)
+
+
+class TemperatureHistoryInput(BaseModel):
+    entries: List[TemperatureEntry]
+
+
+class TemperatureHistoryResponse(BaseModel):
+    success: bool
+    message: str
+
+
+# Location-based Fever Detection
+class LocationData(BaseModel):
+    latitude: float = Field(..., ge=-90.0, le=90.0)
+    longitude: float = Field(..., ge=-180.0, le=180.0)
+    location_name: Optional[str] = Field(None, max_length=100)
+
+
+class FeverReportInput(BaseModel):
+    location: LocationData
+    temperature: float = Field(..., ge=95.0, le=110.0)
+    timestamp: str
+    symptoms: List[str]
+
+
+class LocationFeverStats(BaseModel):
+    location_name: str
+    fever_count: int
+    alert_level: str = Field(..., pattern="^(normal|elevated|high)$")
+
+
+# Reminder System
+class Reminder(BaseModel):
+    id: str
+    type: str = Field(..., pattern="^(medicine|diet|checkup|temperature)$")
+    title: str = Field(..., min_length=1, max_length=100)
+    description: str = Field(..., max_length=300)
+    time: str  # Format: HH:MM
+    frequency: str = Field(..., pattern="^(once|daily|twice_daily|thrice_daily|weekly)$")
+    start_date: str
+    end_date: Optional[str] = None
+    enabled: bool = True
+
+
+class ReminderInput(BaseModel):
+    reminders: List[Reminder]
+
+
+class ReminderResponse(BaseModel):
+    success: bool
+    message: str
+    reminders: List[Reminder]
+
+
+# API Endpoints for New Features
+@app.post("/api/food-history", response_model=FoodHistoryResponse)
+async def save_food_history(data: FoodHistoryInput):
+    """Save food/meal history entries"""
+    try:
+        logger.info(f"Saving {len(data.entries)} food history entries")
+        # In a real app, this would save to a database
+        # For MVP, we're returning success so frontend can use localStorage
+        return FoodHistoryResponse(
+            success=True,
+            message=f"Successfully saved {len(data.entries)} food entries"
+        )
+    except Exception as e:
+        logger.error(f"Error saving food history: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to save food history"
+        )
+
+
+@app.post("/api/temperature-history", response_model=TemperatureHistoryResponse)
+async def save_temperature_history(data: TemperatureHistoryInput):
+    """Save temperature history entries"""
+    try:
+        logger.info(f"Saving {len(data.entries)} temperature history entries")
+        # In a real app, this would save to a database
+        # For MVP, we're returning success so frontend can use localStorage
+        return TemperatureHistoryResponse(
+            success=True,
+            message=f"Successfully saved {len(data.entries)} temperature entries"
+        )
+    except Exception as e:
+        logger.error(f"Error saving temperature history: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to save temperature history"
+        )
+
+
+@app.post("/api/location/fever-report", response_model=dict)
+async def report_fever_location(data: FeverReportInput):
+    """Report fever with location data for community tracking"""
+    try:
+        logger.info(f"Fever report from location: {data.location.location_name or 'Unknown'}")
+        # In a real app, this would save to a database and aggregate data
+        # For MVP, returning acknowledgment
+        return {
+            "success": True,
+            "message": "Fever report recorded successfully",
+            "alert_level": "normal"  # Would be calculated based on area data
+        }
+    except Exception as e:
+        logger.error(f"Error recording fever report: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to record fever report"
+        )
+
+
+@app.get("/api/location/fever-stats", response_model=LocationFeverStats)
+async def get_location_fever_stats(
+    latitude: float,
+    longitude: float,
+    radius_km: float = 10.0
+):
+    """Get fever statistics for a specific location"""
+    try:
+        logger.info(f"Fetching fever stats for location: {latitude}, {longitude}")
+        # In a real app, this would query a database for nearby fever reports
+        # For MVP, returning simulated data
+        return LocationFeverStats(
+            location_name="Local Area",
+            fever_count=0,
+            alert_level="normal"
+        )
+    except Exception as e:
+        logger.error(f"Error fetching fever stats: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to fetch fever statistics"
+        )
+
+
+@app.post("/api/reminders", response_model=ReminderResponse)
+async def save_reminders(data: ReminderInput):
+    """Save medication and diet reminders"""
+    try:
+        logger.info(f"Saving {len(data.reminders)} reminders")
+        # In a real app, this would save to a database
+        # For MVP, we're returning success so frontend can use localStorage
+        return ReminderResponse(
+            success=True,
+            message=f"Successfully saved {len(data.reminders)} reminders",
+            reminders=data.reminders
+        )
+    except Exception as e:
+        logger.error(f"Error saving reminders: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to save reminders"
+        )
+
+
+@app.get("/api/reminders", response_model=List[Reminder])
+async def get_reminders():
+    """Get all active reminders"""
+    try:
+        logger.info("Fetching reminders")
+        # In a real app, this would fetch from a database
+        # For MVP, returning empty list (frontend will use localStorage)
+        return []
+    except Exception as e:
+        logger.error(f"Error fetching reminders: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to fetch reminders"
+        )
+
+
 @app.get("/")
 async def root():
     """Root endpoint"""
     return {
         "message": "AI Fever Triage System API",
-        "version": "1.0.0",
+        "version": "2.0.0",
         "docs": "/docs",
         "health": "/api/health"
     }

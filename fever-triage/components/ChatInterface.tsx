@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Send, X, MessageSquare, Loader2 } from 'lucide-react';
 import { TriageOutput } from '@/lib/types';
+import VoiceInput from './VoiceInput';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -95,6 +96,10 @@ export default function ChatInterface({ triageResult, onClose }: ChatInterfacePr
     }
   };
 
+  const handleVoiceTranscript = (transcript: string) => {
+    setInput(transcript);
+  };
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
       <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-3xl h-[600px] flex flex-col">
@@ -168,10 +173,11 @@ export default function ChatInterface({ triageResult, onClose }: ChatInterfacePr
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyPress={handleKeyPress}
-              placeholder="Type your question..."
+              placeholder="Type your question or use voice..."
               className="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
               disabled={isLoading}
             />
+            <VoiceInput onTranscript={handleVoiceTranscript} />
             <button
               onClick={handleSend}
               disabled={!input.trim() || isLoading}
